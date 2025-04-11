@@ -16,18 +16,18 @@ from collections import OrderedDict
 DEFAULT_CACHE_FOLDER:str = "cache"
 DEFAULT_PROTOCOL_PATH:str = "protocol.txt"
 REMOTE_PROTOCOL_REFERENCE:str = "https://rgk.vote.mod.gov.ua/protocol.txt"
-
+NOT_FOUND:int = -1;
 
 class PaccRank():
 
+    RANK_VALS_PREFIX:str = "V=";
+
     _remote_reference : str
     _values : Counter = Counter()
-    _sorted_values : OrderedDict = OrderedDict()
+    _sorted_values : OrderedDict
 
-       
     def __init__(self, remote_reference : str):
         self._remote_reference = remote_reference
-        pass
 
     def process(self):
         tmp : dict = dict()
@@ -38,10 +38,8 @@ class PaccRank():
             
     def print_result(self):
         for index, (key, value) in enumerate(self._sorted_values.items()):
-            print(str(index) + "). " + str(value) + " - " + str(key))
+            print(str(index+1) + "). " + str(value) + " - " + str(key))
 
-        
- 
 
     def prepare_data(self):
         protocol_text:str
@@ -56,11 +54,11 @@ class PaccRank():
         full_path = os.path.join(DEFAULT_CACHE_FOLDER, DEFAULT_PROTOCOL_PATH)
         with open(full_path, "r") as protocol_file:
             for line in iter(protocol_file.readline, ''):
-                index_begin = line.find("V=")
-                if index_begin != -1:
-                    index_begin += 2
+                index_begin = line.find(self.RANK_VALS_PREFIX)
+                if index_begin != NOT_FOUND:
+                    index_begin += len(self.RANK_VALS_PREFIX)
                     index_end = line.find("\n", index_begin)
-                    if index_end != -1:
+                    if index_end != NOT_FOUND:
                         eval = line[index_begin:index_end] 
                         elements = eval.split(",")
                         vals = list(map(int, elements))
@@ -71,14 +69,14 @@ class PaccRank():
    
     def _load_protocol_from_remote(self): 
         print("Loading from remote...")
-        result = requests.get(REMOTE_PROTOCOL_REFERENCE)
+        result = requests.get(self._remote_reference)
         protocol:bytes = result.content.decode('utf-8')
         return protocol
 
 if __name__ == "__main__":
     logging.basicConfig()
     print("Starting...")
-    ss = PaccRank("")
+    ss = PaccRank(REMOTE_PROTOCOL_REFERENCE)
     ss.prepare_data()
     ss.process()
     ss.print_result()
