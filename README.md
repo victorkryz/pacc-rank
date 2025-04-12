@@ -9,7 +9,7 @@ Python script that processes the voting result of online
 #### What the script does:
  - downloads protocol into directory "cache"
  - processes the protocol and print out the list of candidates (ids)
-   and their voting rank in descent order
+   and their voting rank in in descending order of votes
 
 #### Run script:
     
