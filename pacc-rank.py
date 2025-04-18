@@ -1,13 +1,4 @@
 import os
-import struct
-import sys
-import time
-import datetime
-import array
-import enum
-import urllib
-import json
-import re
 import requests
 import logging
 from collections import Counter
@@ -38,7 +29,7 @@ class PaccRank():
             
     def print_result(self):
         for index, (key, value) in enumerate(self._sorted_values.items()):
-            print(str(index+1) + "). " + str(value) + " - " + str(key))
+              print(f"{str(index+1)} ). {str(value)} - {str(key)}")
 
 
     def prepare_data(self):
